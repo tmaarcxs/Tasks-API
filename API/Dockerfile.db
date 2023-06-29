@@ -1,0 +1,13 @@
+# Base image
+FROM postgres:latest
+
+# Set the environment variables
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=root
+ENV POSTGRES_DB=tasks
+
+# Copy the SQL script into the container
+COPY create_table.sql /docker-entrypoint-initdb.d/
+
+# Expose the PostgreSQL port
+EXPOSE 5432

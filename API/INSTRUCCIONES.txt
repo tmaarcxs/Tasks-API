@@ -1,0 +1,22 @@
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                                                                     ┃
+┃                                  INSTRUCCIONES API TASKS                              ┃
+┃                                                                                     ┃
+┃  1- Modificar el archivo \API\src\main\resources\templates\index.html                ┃
+┃     y en la linea 112 sustituir la IP por la dirección real del PC o localhost.       ┃
+┃                                                                                     ┃
+┃  2- Ejecutar 'docker compose up' para levantar los contenedores automáticamente.    ┃
+┃                                                                                     ┃
+┃  Aclaraciones:                                                                      ┃
+┃  - Postgre: localhost:5432                                                         ┃
+┃    User: root                                                                      ┃
+┃    Pass: root                                                                      ┃
+┃                                                                                     ┃
+┃  - API:                                                                            ┃
+┃    Routes: \API\src\main\java\com\marcos\API\Controller\C_Tasks.java                ┃
+┃    localhost:8282/tasks/..                                                         ┃
+┃                                                                                     ┃
+┃  - UI Test:                                                                        ┃
+┃    localhost:8282                                                                  ┃
+┃                                                                                     ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛

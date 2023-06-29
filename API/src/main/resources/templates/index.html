@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>API Controller Test</title>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom styles for Swagger-like appearance */
+    .api-container {
+      margin: 20px;
+    }
+
+    .api-section {
+      margin-top: 40px;
+    }
+
+    .api-section h3 {
+      margin-bottom: 10px;
+    }
+
+    .api-section .form-group {
+      margin-bottom: 10px;
+    }
+
+    .api-section pre {
+      background-color: #f8f9fa;
+      padding: 10px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>API Controller Test</h1>
+  <hr>
+
+  <div class="api-container">
+    <div class="api-section">
+      <h3>Get All Tasks</h3>
+      <p>Retrieves all tasks from the server.</p>
+      <button class="btn btn-primary" onclick="getAllTasks()">Get All Tasks</button>
+      <pre id="allTasksResult"></pre>
+    </div>
+
+    <div class="api-section">
+      <h3>Get Task by ID</h3>
+      <p>Retrieves a specific task by its ID.</p>
+      <div class="form-group">
+        <label for="taskId">Task ID:</label>
+        <input type="number" class="form-control" id="taskId">
+      </div>
+      <button class="btn btn-primary" onclick="getTaskById()">Get Task</button>
+      <pre id="taskByIdResult"></pre>
+    </div>
+
+    <div class="api-section">
+      <h3>Insert Task</h3>
+      <p>Inserts a new task into the server.</p>
+      <div class="form-group">
+        <label for="taskTitle">Task Title:</label>
+        <input type="text" class="form-control" id="taskTitle">
+      </div>
+      <div class="form-group">
+        <label for="taskDescription">Task Description:</label>
+        <input type="text" class="form-control" id="taskDescription">
+      </div>
+      <button class="btn btn-primary" onclick="insertTask()">Insert Task</button>
+      <pre id="insertTaskResult"></pre>
+    </div>
+
+    <div class="api-section">
+      <h3>Update Task</h3>
+      <p>Updates an existing task.</p>
+      <div class="form-group">
+        <label for="updateTaskId">Task ID:</label>
+        <input type="number" class="form-control" id="updateTaskId">
+      </div>
+      <div class="form-group">
+        <label for="updateTaskTitle">Task Title:</label>
+        <input type="text" class="form-control" id="updateTaskTitle">
+      </div>
+      <div class="form-group">
+        <label for="updateTaskDescription">Task Description:</label>
+        <input type="text" class="form-control" id="updateTaskDescription">
+      </div>
+      <button class="btn btn-primary" onclick="updateTask()">Update Task</button>
+      <pre id="updateTaskResult"></pre>
+    </div>
+
+    <div class="api-section">
+      <h3>Delete Task</h3>
+      <p>Deletes a task by its ID.</p>
+      <div class="form-group">
+        <label for="deleteTaskId">Task ID:</label>
+        <input type="number" class="form-control" id="deleteTaskId">
+      </div>
+      <button class="btn btn-primary" onclick="deleteTask()">Delete Task</button>
+      <pre id="deleteTaskResult"></pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Add JavaScript for API calls -->
+<script>
+  var baseUrl = 'http://192.168.1.49:8282/tasks';
+
+  /**
+   * Clears the input fields.
+   */
+  function clearInputFields() {
+    document.getElementById('taskId').value = '';
+    document.getElementById('taskTitle').value = '';
+    document.getElementById('taskDescription').value = '';
+    document.getElementById('updateTaskId').value = '';
+    document.getElementById('updateTaskTitle').value = '';
+    document.getElementById('updateTaskDescription').value = '';
+    document.getElementById('deleteTaskId').value = '';
+  }
+
+  /**
+   * Retrieves all tasks from the server.
+   */
+  function getAllTasks() {
+    fetch(baseUrl + '/all', {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              const allTasksResult = document.getElementById('allTasksResult');
+              allTasksResult.innerHTML = '';
+
+              // Create the table
+              const table = document.createElement('table');
+              table.classList.add('table');
+
+              // Create the table header
+              const tableHeader = document.createElement('thead');
+              const headerRow = document.createElement('tr');
+              headerRow.innerHTML = '<th>ID</th><th>Title</th><th>Description</th>';
+              tableHeader.appendChild(headerRow);
+              table.appendChild(tableHeader);
+
+              // Create the table body
+              const tableBody = document.createElement('tbody');
+              data.forEach(task => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${task.Id}</td><td>${task.Title}</td><td>${task.Description}</td>`;
+                tableBody.appendChild(row);
+              });
+              table.appendChild(tableBody);
+
+              // Append the table to the result element
+              allTasksResult.appendChild(table);
+            });
+  }
+
+  /**
+   * Retrieves a specific task by its ID.
+   */
+  function getTaskById() {
+    const taskId = document.getElementById('taskId').value;
+    fetch(baseUrl + '/' + taskId, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Error: ' + response.status);
+              }
+              return response.json();
+            })
+            .then(data => {
+              const taskByIdResult = document.getElementById('taskByIdResult');
+              taskByIdResult.innerHTML = '';
+
+              // Create the table
+              const table = document.createElement('table');
+              table.classList.add('table');
+
+              // Create the table header
+              const tableHeader = document.createElement('thead');
+              const headerRow = document.createElement('tr');
+              headerRow.innerHTML = '<th>ID</th><th>Title</th><th>Description</th>';
+              tableHeader.appendChild(headerRow);
+              table.appendChild(tableHeader);
+
+              // Create the table body with the single task
+              const tableBody = document.createElement('tbody');
+              data.forEach(task => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${task.Id}</td><td>${task.Title}</td><td>${task.Description}</td>`;
+                tableBody.appendChild(row);
+              });
+              table.appendChild(tableBody);
+
+              // Append the table to the result element
+              taskByIdResult.appendChild(table);
+            })
+            .catch(error => {
+              const taskByIdResult = document.getElementById('taskByIdResult');
+              taskByIdResult.innerHTML = 'Error: ' + error.message;
+            });
+    clearInputFields();
+  }
+
+  /**
+   * Inserts a new task into the server.
+   */
+  /**
+   * Inserts a new task into the server.
+   */
+  function insertTask() {
+    const taskTitle = document.getElementById('taskTitle').value;
+    const taskDescription = document.getElementById('taskDescription').value;
+    const task = { Title: taskTitle, Description: taskDescription };
+    fetch(baseUrl + '/insert', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(task)
+    })
+            .then(response => response.text())
+            .then(data => {
+              const insertResult = document.getElementById('insertTaskResult');
+              insertResult.innerHTML = data;  // Use the API response data
+            });
+    clearInputFields();
+  }
+
+  /**
+   * Updates an existing task on the server.
+   */
+  function updateTask() {
+    const taskId = document.getElementById('updateTaskId').value;
+    const taskTitle = document.getElementById('updateTaskTitle').value;
+    const taskDescription = document.getElementById('updateTaskDescription').value;
+    const task = { Id: taskId, Title: taskTitle, Description: taskDescription };
+    fetch(baseUrl + '/update', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(task)
+    })
+            .then(response => response.text())
+            .then(data => {
+              const updateResult = document.getElementById('updateTaskResult');
+              updateResult.innerHTML = data;  // Use the API response data
+            });
+    clearInputFields();
+  }
+
+  /**
+   * Deletes a task from the server by its ID.
+   */
+  function deleteTask() {
+    const taskId = document.getElementById('deleteTaskId').value;
+    fetch(baseUrl + '/delete/' + taskId, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => response.text())
+            .then(data => {
+              const deleteResult = document.getElementById('deleteTaskResult');
+              deleteResult.innerHTML = data;  // Use the API response data
+            });
+    clearInputFields();
+  }
+
+</script>
+
+
+</body>
+</html>
